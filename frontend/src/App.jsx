@@ -1,33 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DashboardLayoutBasic from './layouts/Dashboard';
+import Sidebar from './global/Sidebar';
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
+import Topbar from './global/Topbar';
+import { useState } from 'react';
+import Register from './layouts/Register';
+import { ToastContainer } from 'react-toastify';
+import Login from './layouts/LogIn';
+import { HelmetProvider } from 'react-helmet-async';
+import ForgotPassword from './layouts/ForgotPassword';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [theme, colorMode] = useMode();
+  const [isSidebar, setIsSidebar] = useState(true);
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <BrowserRouter>
+        <ColorModeContext.Provider value={colorMode}>
+        <ToastContainer theme='dark'/>
+        <HelmetProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <div className="app">
+              <Sidebar isSidebar={isSidebar} />
+              <main className="content">
+                <Topbar setIsSidebar={setIsSidebar} />
+                <Routes>
+                  <Route path='*' element={<DashboardLayoutBasic />}></Route>
+                  <Route path='/register' element={<Register />}></Route>
+                  <Route path='/login' element={<Login />}></Route>
+                  <Route path='/password/forgot' element={<ForgotPassword />}></Route>
+
+                </Routes>
+              </main>
+            </div>
+          </ThemeProvider>
+          </HelmetProvider>
+        </ColorModeContext.Provider>
+      </BrowserRouter>
     </>
   )
 }
