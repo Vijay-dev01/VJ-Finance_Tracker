@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify';
 import Login from './layouts/LogIn';
 import { HelmetProvider } from 'react-helmet-async';
 import ForgotPassword from './layouts/ForgotPassword';
+import ProtectedRoute from './route/ProtectedRoute';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -28,7 +29,7 @@ function App() {
               <main className="content">
                 <Topbar setIsSidebar={setIsSidebar} />
                 <Routes>
-                  <Route path='*' element={<DashboardLayoutBasic />}></Route>
+                  <Route path='*' element={<ProtectedRoute><DashboardLayoutBasic /></ProtectedRoute>}></Route>
                   <Route path='/register' element={<Register />}></Route>
                   <Route path='/login' element={<Login />}></Route>
                   <Route path='/password/forgot' element={<ForgotPassword />}></Route>
