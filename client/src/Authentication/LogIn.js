@@ -1,9 +1,9 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearAuthError, login } from "../../actions/UserAction";
+import { clearAuthError, login } from "../actions/UserAction";
 import { toast } from "react-toastify";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import MetaData from "../Layouts/MetaData";
+import MetaData from "../utils/MetaData";
 import { TextField, Button, Grid, Box, Typography } from "@mui/material";
 
 export default function Login() {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register, clearAuthError } from "../../actions/UserAction";
+import { register, clearAuthError } from "../actions/UserAction";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { avatarPreviewimg } from "../../imagedata";
+import  avatarPreviewimg  from "../assets/images/default_avatar.png";
 import {
   TextField,
   Button,
@@ -143,7 +143,7 @@ export default function Register() {
               type="submit"
               fullWidth
               size="large"
-              disabled={loading}
+            //   disabled={loading}
             >
               REGISTER
             </Button>
