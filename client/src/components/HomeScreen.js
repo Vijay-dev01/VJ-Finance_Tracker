@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,11 @@ const NAVIGATION = [
     segment: 'dashboard',
     title: 'Dashboard',
     icon: <DashboardIcon />,
+  },
+  {
+    segment: 'profile',
+    title: 'Profile',
+    icon: <AccountBoxIcon />,
   },
 ];
 
