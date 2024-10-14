@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAuthError, login } from "../actions/UserAction";
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import MetaData from "../utils/MetaData";
 import { TextField, Button, Grid, Box, Typography } from "@mui/material";
@@ -30,7 +31,8 @@ export default function Login() {
 
     if (error) {
       toast(error, {
-        position: toast.POSITION.BOTTOM_CENTER,
+        // position: toast.POSITION.BOTTOM_CENTER,
+        position: "bottom-center", 
         type: "error",
         onOpen: () => {
           dispatch(clearAuthError());
@@ -86,7 +88,7 @@ export default function Login() {
                 type="submit"
                 fullWidth
                 size="large"
-                disabled={loading}
+                // disabled={loading}
               >
                 LOGIN
               </Button>
