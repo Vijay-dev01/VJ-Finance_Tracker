@@ -87,6 +87,7 @@ export const logout = async (dispatch) => {
     await axios.get(`/api/v1/logout`);
     dispatch(logoutSuccess());
   } catch (error) {
+    console.log('error', error)
     dispatch(logoutFail);
   }
 };

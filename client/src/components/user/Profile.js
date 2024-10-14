@@ -11,7 +11,7 @@ export default function Profile() {
         <Grid item xs={12} md={3}>
           <Box display="flex" flexDirection="column" alignItems="center">
             <Avatar
-              src={user.avatar ?? "./images/default_avatar.png"}
+              src={user.avatar ?? "../../assets/images/default_avatar.png"}
               alt="Profile Avatar"
               sx={{ width: 150, height: 150 }}
             />

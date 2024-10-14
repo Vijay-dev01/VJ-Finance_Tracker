@@ -14,13 +14,9 @@ import UpdateProfile from "./components/user/UpdateProfile";
 import UpdatePassword from "./components/user/UpdatePassword";
 import ResetPassword from "./components/user/ResetPassword";
 import ForgotPassword from "./components/user/ForgotPassword";
+import HomeScreen from "./components/HomeScreen";
 
 function App() {
-
-  useEffect(() => {
-    store.dispatch(loadUser)
-  })
-
   return (
     <>
       <BrowserRouter>
@@ -28,6 +24,7 @@ function App() {
         <HelmetProvider>
           <Routes>
             <Route path="/" element={<Navbar />}></Route>
+            <Route path="/homescreen" element={<HomeScreen />}></Route>
             <Route path="/login" element={<LogIn />}></Route>
             <Route path="/register" element={<Register />}></Route>
             <Route path='/myprofile' element={<ProtectedRoute> <Profile /></ProtectedRoute>}></Route>

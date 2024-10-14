@@ -25,7 +25,8 @@ export default function UpdatePassword() {
     if (isUpdated) {
       toast("Password updated successfully", {
         type: "success",
-        position: toast.POSITION.BOTTOM_CENTER,
+        // position: toast.POSITION.BOTTOM_CENTER,
+        position: "bottom-center", 
       });
       setOldPassword("");
       setPassword("");
@@ -33,7 +34,8 @@ export default function UpdatePassword() {
     }
     if (error) {
       toast(error, {
-        position: toast.POSITION.BOTTOM_CENTER,
+        // position: toast.POSITION.BOTTOM_CENTER,
+        position: "bottom-center", 
         type: "error",
         onOpen: () => {
           dispatch(clearAuthError);

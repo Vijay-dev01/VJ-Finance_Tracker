@@ -55,7 +55,7 @@ export default function Register() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/");
+      navigate("/homescreen");
       return;
     }
     if (error) {
