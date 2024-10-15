@@ -1,7 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import { createTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
@@ -10,6 +8,7 @@ import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from '../actions/UserAction';
 import { useNavigate } from 'react-router-dom';
+import Profile from './user/Profile';
 
 const NAVIGATION = [
   {
@@ -40,37 +39,6 @@ const demoTheme = createTheme({
   },
 });
 
-function DemoPageContent({ pathname, user }) {
-  // Fallback to default avatar if user.avatar is not present
-  const avatarSrc = user.avatar ? user.avatar : '/images/default_avatar.png'; 
-
-  return (
-    <Box
-      sx={{
-        py: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
-      }}
-    >
-      {/* Display User Information */}
-      <Box sx={{ mb: 4 }}>
-        <img src={avatarSrc} alt="User Avatar" style={{ borderRadius: '50%', width: 100, height: 100 }} />
-        <Typography variant="h5">{user.name}</Typography>
-        <Typography variant="body1">{user.email}</Typography>
-      </Box>
-
-      <Typography>Dashboard content for {pathname}</Typography>
-    </Box>
-  );
-}
-
-DemoPageContent.propTypes = {
-  pathname: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired,
-};
-
 function HomeScreen(props) {
   const { window } = props;
   const dispatch = useDispatch();
@@ -96,6 +64,18 @@ function HomeScreen(props) {
      navigate("/");
   };
 
+  const renderContent = () => {
+    switch (pathname) {
+      case '/dashboard':
+        return <div>Welcome to the Dashboard</div>;
+      case '/profile':
+        return <Profile />;
+      default:
+        return <div>Welcome to the Dashboard</div>;
+    }
+  };
+
+
   return (
     <AppProvider
       session={{
@@ -117,7 +97,8 @@ function HomeScreen(props) {
       window={demoWindow}
     >
       <DashboardLayout>
-        <DemoPageContent pathname={pathname} user={user} />
+        {/* <DemoPageContent pathname={pathname} user={user} /> */}
+        {renderContent()}
       </DashboardLayout>
     </AppProvider>
   );
