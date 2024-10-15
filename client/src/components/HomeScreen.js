@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from '../actions/UserAction';
 import { useNavigate } from 'react-router-dom';
 import Profile from './user/Profile';
+import Dashboard from '../scenes/Dashboard';
 
 const NAVIGATION = [
   {
@@ -67,7 +68,7 @@ function HomeScreen(props) {
   const renderContent = () => {
     switch (pathname) {
       case '/dashboard':
-        return <div>Welcome to the Dashboard</div>;
+        return <Dashboard />;
       case '/profile':
         return <Profile />;
       default:
