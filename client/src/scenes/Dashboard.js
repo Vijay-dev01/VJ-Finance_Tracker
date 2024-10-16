@@ -22,12 +22,31 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { getIncomes } from "../actions/TransactionsAction";
 
 // Register the necessary components for Chart.js
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
   const chartRef = useRef(null);
+  const dispatch = useDispatch();
+  const {incomes, loader, error}=useSelector((state)=>state.incomeState)
+
+  console.log('State', useSelector((state)=>state.incomeState))
+  console.log('incomes', incomes)
+
+  useEffect(()=>{
+    if(error) {
+        return toast.error(error,{
+            // position: toast.POSITION.BOTTOM_CENTER
+            position: "bottom-center",
+        })
+    }
+    dispatch(getIncomes()) 
+}, [error, dispatch])
+
 
   // Sample data for the bar chart
   const barData = {
