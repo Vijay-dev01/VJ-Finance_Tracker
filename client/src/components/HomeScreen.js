@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import Profile from './user/Profile';
 import Dashboard from '../scenes/Dashboard';
 import AddIncome from './Income/AddIncome';
+import AddExpense from './Expense/AddExpense';
 
 const NAVIGATION = [
   {
@@ -26,6 +27,11 @@ const NAVIGATION = [
   {
     segment: 'income',
     title: 'Income',
+    icon: <AccountBoxIcon />,
+  },
+  {
+    segment: 'expense',
+    title: 'Expense',
     icon: <AccountBoxIcon />,
   },
 ];
@@ -79,6 +85,8 @@ function HomeScreen(props) {
         return <Profile />;
       case '/income':
         return <AddIncome />;
+      case '/expense':
+        return <AddExpense />;
       default:
         return <div>Welcome to the Dashboard</div>;
     }

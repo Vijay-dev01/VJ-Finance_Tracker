@@ -14,6 +14,7 @@ import ForgotPassword from "./components/user/ForgotPassword";
 import HomeScreen from "./components/HomeScreen";
 import Dashboard from "./scenes/Dashboard";
 import AddIncome from "./components/Income/AddIncome";
+import AddExpense from "./components/Expense/AddExpense";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path='/password/reset/:token' element={ <ResetPassword />}></Route>
             <Route path='/dashboard' element={ <Dashboard />}></Route>
             <Route path='/income' element={ <AddIncome />}></Route>
+            <Route path='/expense' element={ <AddExpense />}></Route>
           </Routes>
         </HelmetProvider>
       </BrowserRouter>
