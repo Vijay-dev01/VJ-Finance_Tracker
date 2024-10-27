@@ -28,7 +28,7 @@ export default function ExpenseTable({ expenses, onEdit, onDelete }) {
         </TableHead>
         <TableBody>
           {expenses.map((expense, index) => (
-            <TableRow key={expense.id}>
+            <TableRow key={expense._id}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>{expense.title}</TableCell>
               <TableCell>{expense.category}</TableCell>
@@ -36,10 +36,10 @@ export default function ExpenseTable({ expenses, onEdit, onDelete }) {
               <TableCell>{expense.amount}</TableCell>
               <TableCell>{expense.description}</TableCell>
               <TableCell>
-                <IconButton onClick={() => onEdit(expense.id)} color="primary">
+                <IconButton onClick={() => onEdit(expense._id)} color="primary">
                   <Edit />
                 </IconButton>
-                <IconButton onClick={() => onDelete(expense.id)} color="secondary">
+                <IconButton onClick={() => onDelete(expense._id)} color="secondary">
                   <Delete />
                 </IconButton>
               </TableCell>

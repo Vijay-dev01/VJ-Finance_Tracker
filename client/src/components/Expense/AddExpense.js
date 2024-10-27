@@ -37,12 +37,17 @@ export default function AddExpense() {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteExpense(id));
+    dispatch(deleteExpense(id)).then(() => {
+      toast("Expense deleted successfully!", {
+        position: "bottom-center",
+        type: "success",
+      });
+    });
   };
+  
 
   const handleEdit = (id) => {
     console.log("Edit", id);
-    // Handle edit logic here
   };
 
   useEffect(() => {
@@ -55,7 +60,7 @@ export default function AddExpense() {
         onClose: () => {
           setExpenseData({ title: "", amount: "", category: "", description: "", date: "" });
           dispatch(clearExpenseCreatedData());
-          navigate("/homescreen");
+        //   navigate("/homescreen");
         },
       });
     }
@@ -71,9 +76,10 @@ export default function AddExpense() {
     }
   }, [isExpenseCreated, error, dispatch, navigate]);
 
-  const filteredExpenses = expenses.filter((expense) =>
+  const filteredExpenses = Array.isArray(expenses) ? expenses.filter((expense) =>
     expense.title.toLowerCase().includes(filter.toLowerCase())
-  );
+  ) : [];
+  
 
   return (
     <Grid container spacing={2} justifyContent="center" style={{ marginTop: "50px" }}>

@@ -68,6 +68,7 @@ export const deleteIncome = (id) => async (dispatch) => {
     dispatch(deleteIncomeRequest());
     await axios.delete(`/api/v1/delete-income/${id}`);
     dispatch(deleteIncomeSuccess());
+    dispatch(getIncomes());
   } catch (error) {
     dispatch(deleteIncomeFail(error.response.data.message));
   }
@@ -77,6 +78,7 @@ export const deleteExpense = (id) => async (dispatch) => {
     dispatch(deleteExpenseRequest());
     await axios.delete(`/api/v1/delete-expense/${id}`);
     dispatch(deleteExpenseSuccess());
+    dispatch(getExpense());
   } catch (error) {
     dispatch(deleteExpenseFail(error.response.data.message));
   }

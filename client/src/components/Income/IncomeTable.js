@@ -28,7 +28,7 @@ export default function IncomeTable({ incomes, onEdit, onDelete }) {
         </TableHead>
         <TableBody>
           {incomes.map((income, index) => (
-            <TableRow key={income.id}>
+            <TableRow key={income._id}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>{income.title}</TableCell>
               <TableCell>{income.category}</TableCell>
@@ -36,10 +36,10 @@ export default function IncomeTable({ incomes, onEdit, onDelete }) {
               <TableCell>{income.amount}</TableCell>
               <TableCell>{income.description}</TableCell>
               <TableCell>
-                <IconButton color="primary" onClick={() => onEdit(income.id)}>
+                <IconButton color="primary" onClick={() => onEdit(income._id)}>
                   <Edit />
                 </IconButton>
-                <IconButton color="secondary" onClick={() => onDelete(income.id)}>
+                <IconButton color="secondary" onClick={() => onDelete(income._id)}>
                   <Delete />
                 </IconButton>
               </TableCell>

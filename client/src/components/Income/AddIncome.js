@@ -37,12 +37,16 @@ export default function AddIncome() {
   };
 
   const handleDelete = (id) => {
-    dispatch(deleteIncome(id));
+    dispatch(deleteIncome(id)).then(() => {
+      toast("Expense deleted successfully!", {
+        position: "bottom-center",
+        type: "success",
+      });
+    });
   };
 
   const handleEdit = (id) => {
     console.log("Edit", id);
-    // Handle edit logic here
   };
 
   useEffect(() => {
@@ -71,9 +75,9 @@ export default function AddIncome() {
     }
   }, [isIncomeCreated, error, dispatch, navigate]);
 
-  const filteredIncomes = incomes.filter((income) =>
+  const filteredIncomes = Array.isArray(incomes) ? incomes.filter((income) =>
     income.title.toLowerCase().includes(filter.toLowerCase())
-  );
+  ) : [];
 
   return (
     <Grid container spacing={2} justifyContent="center" style={{ marginTop: "50px" }}>
