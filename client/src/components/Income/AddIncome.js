@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createNewIncome, clearIncomeCreatedData } from "../../actions/TransactionsAction";
+import { getIncomes, createNewIncome, clearIncomeCreatedData, deleteIncome } from "../../actions/TransactionsAction";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,6 +11,7 @@ import {
   Grid,
   InputLabel,
 } from "@mui/material";
+import IncomeTable from "./IncomeTable";
 
 export default function AddIncome() {
   const [incomeData, setIncomeData] = useState({
@@ -20,10 +21,11 @@ export default function AddIncome() {
     description: "",
     date: "",
   });
+  const [filter, setFilter] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, isIncomeCreated } = useSelector((state) => state.incomeState);
+  const { loading, error, isIncomeCreated, incomes } = useSelector((state) => state.incomeState);
 
   const onChange = (e) => {
     setIncomeData({ ...incomeData, [e.target.name]: e.target.value });
@@ -34,12 +36,24 @@ export default function AddIncome() {
     dispatch(createNewIncome(incomeData));
   };
 
+  const handleDelete = (id) => {
+    dispatch(deleteIncome(id));
+  };
+
+  const handleEdit = (id) => {
+    console.log("Edit", id);
+    // Handle edit logic here
+  };
+
   useEffect(() => {
+    dispatch(getIncomes());
+
     if (isIncomeCreated) {
       toast("Income added successfully!", {
         position: "bottom-center",
         type: "success",
         onClose: () => {
+          setIncomeData({ title: "", amount: "", category: "", description: "", date: "" });
           dispatch(clearIncomeCreatedData());
           navigate("/homescreen");
         },
@@ -57,9 +71,13 @@ export default function AddIncome() {
     }
   }, [isIncomeCreated, error, dispatch, navigate]);
 
+  const filteredIncomes = incomes.filter((income) =>
+    income.title.toLowerCase().includes(filter.toLowerCase())
+  );
+
   return (
-    <Grid container justifyContent="center" style={{ marginTop: "50px" }}>
-      <Grid item xs={12} md={6}>
+    <Grid container spacing={2} justifyContent="center" style={{ marginTop: "50px" }}>
+      <Grid item xs={10} md={4}>
         <form onSubmit={submitHandler}>
           <Box p={4} boxShadow={3} borderRadius={4}>
             <Typography variant="h4" component="h1" gutterBottom>
@@ -139,6 +157,23 @@ export default function AddIncome() {
             </Button>
           </Box>
         </form>
+      </Grid>
+
+      <Grid item xs={12} md={8}>
+        <TextField
+          label="Filter by Title"
+          variant="outlined"
+          fullWidth
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          style={{ marginBottom: "16px" }}
+        />
+
+        <IncomeTable
+          incomes={filteredIncomes}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
       </Grid>
     </Grid>
   );
