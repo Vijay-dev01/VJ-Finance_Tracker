@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getIncomes, createNewIncome, clearIncomeCreatedData, deleteIncome } from "../../actions/TransactionsAction";
+import {
+  getIncomes,
+  createNewIncome,
+  clearIncomeCreatedData,
+  deleteIncome,
+} from "../../actions/TransactionsAction";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -25,7 +30,9 @@ export default function AddIncome() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, isIncomeCreated, incomes } = useSelector((state) => state.incomeState);
+  const { loading, error, isIncomeCreated, incomes } = useSelector(
+    (state) => state.incomeState
+  );
 
   const onChange = (e) => {
     setIncomeData({ ...incomeData, [e.target.name]: e.target.value });
@@ -57,7 +64,13 @@ export default function AddIncome() {
         position: "bottom-center",
         type: "success",
         onClose: () => {
-          setIncomeData({ title: "", amount: "", category: "", description: "", date: "" });
+          setIncomeData({
+            title: "",
+            amount: "",
+            category: "",
+            description: "",
+            date: "",
+          });
           dispatch(clearIncomeCreatedData());
           navigate("/homescreen");
         },
@@ -75,12 +88,19 @@ export default function AddIncome() {
     }
   }, [isIncomeCreated, error, dispatch, navigate]);
 
-  const filteredIncomes = Array.isArray(incomes) ? incomes.filter((income) =>
-    income.title.toLowerCase().includes(filter.toLowerCase())
-  ) : [];
+  const filteredIncomes = Array.isArray(incomes)
+    ? incomes.filter((income) =>
+        income.title.toLowerCase().includes(filter.toLowerCase())
+      )
+    : [];
 
   return (
-    <Grid container spacing={2} justifyContent="center" style={{ marginTop: "50px" }}>
+    <Grid
+      container
+      spacing={2}
+      justifyContent="center"
+      style={{ marginTop: "50px" }}
+    >
       <Grid item xs={10} md={4}>
         <form onSubmit={submitHandler}>
           <Box p={4} boxShadow={3} borderRadius={4}>
