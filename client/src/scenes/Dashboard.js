@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
   Box,
   Grid,
@@ -22,31 +22,25 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { getIncomes } from "../actions/TransactionsAction";
+// import { useDispatch, useSelector } from "react-redux";
+// import { toast } from "react-toastify";
+// import { getIncomes } from "../actions/TransactionsAction";
 
 // Register the necessary components for Chart.js
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard = () => {
-  const chartRef = useRef(null);
-  const dispatch = useDispatch();
-  const {incomes, loader, error}=useSelector((state)=>state.incomeState)
+  // const dispatch = useDispatch();
+  // const { incomes, loader, error } = useSelector((state) => state.incomeState);
 
-  console.log('State', useSelector((state)=>state.incomeState))
-  console.log('incomes', incomes)
-
-  useEffect(()=>{
-    if(error) {
-        return toast.error(error,{
-            // position: toast.POSITION.BOTTOM_CENTER
-            position: "bottom-center",
-        })
-    }
-    dispatch(getIncomes()) 
-}, [error, dispatch])
-
+  // useEffect(() => {
+  //   if (error) {
+  //     toast.error(error, {
+  //       position: "bottom-center",
+  //     });
+  //   }
+  //   dispatch(getIncomes());
+  // }, [error, dispatch]);
 
   // Sample data for the bar chart
   const barData = {
@@ -98,28 +92,10 @@ const Dashboard = () => {
     },
   ];
 
-  // Cleanup the chart when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-    };
-  }, []);
-
   return (
     <Box sx={{ padding: 2 }}>
       {/* Four Boxes */}
       <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-        {/* {[1, 2, 3, 4].map((item) => (
-          <Grid item xs={3} key={item}>
-            <Paper sx={{ padding: 2 }}>
-              <Typography variant="h6" align="center">
-                Box {item}
-              </Typography>
-            </Paper>
-          </Grid>
-        ))} */}
         <Grid item xs={3}>
           <Paper sx={{ padding: 2 }}>
             <Typography variant="h6" align="center">
@@ -163,8 +139,8 @@ const Dashboard = () => {
       </Grid>
 
       {/* Bar Chart */}
-      <Box sx={{ marginBottom: 3}}>
-        <Bar data={barData} options={chartOptions} ref={chartRef} />
+      <Box sx={{ marginBottom: 3 }}>
+        <Bar data={barData} options={chartOptions} />
       </Box>
 
       {/* Table */}
