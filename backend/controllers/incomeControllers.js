@@ -43,26 +43,35 @@ exports.getIncomes = async (req, res) => {
   }
 };
 
-// exports.deleteIncome = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const income = await IncomeSchema.findById(id);
-//     console.log("Fetched incomes--:", income);
-//     if (!income) {
-//       return res.status(404).json({ message: "Income not found" });
-//     }
+exports.editIncome = async (req, res) => {
+  const { title, amount, category, description, date } = req.body;
+  const { id } = req.params;
 
-//     // Check if the user deleting the income is the same as the one who created it
-//     if (income.user.toString() !== req.user._id) {
-//       return res.status(403).json({ message: "Not authorized to delete this income" });
-//     }
+  try {
+    const income = await IncomeSchema.findById(id);
+    if (!income) {
+      return res.status(404).json({ message: "Income not found" });
+    }
 
-//     await income.remove();
-//     res.status(200).json({ message: "Income Deleted" });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
+    // Check if the user editing the income is the same as the one who created it
+    if (income.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to edit this income" });
+    }
+
+    // Update income details
+    income.title = title || income.title;
+    income.amount = amount || income.amount;
+    income.category = category || income.category;
+    income.description = description || income.description;
+    income.date = date || income.date;
+
+    await income.save();
+    res.status(200).json({ success: true, message: "Income Updated", income });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
 exports.deleteIncome = async (req, res) => {
   const { id } = req.params;
   try {

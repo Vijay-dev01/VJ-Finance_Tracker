@@ -35,10 +35,42 @@ exports.getExpense = async (req, res) => {
     const expenses = await ExpenseSchema.find({ user: req.user._id }).sort({
       createdAt: -1,
     });
+
+    // Add a check here to ensure expenses are not empty
     if (!expenses || expenses.length === 0) {
       return res.status(404).json({ message: "No expenses found" });
     }
+
     res.status(200).json(expenses);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+exports.editExpense = async (req, res) => {
+  const { title, amount, category, description, date } = req.body;
+  const { id } = req.params;
+
+  try {
+    const expense = await ExpenseSchema.findById(id);
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    // Check if the user editing the expense is the same as the one who created it
+    if (expense.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to edit this expense" });
+    }
+
+    // Update expense details
+    expense.title = title || expense.title;
+    expense.amount = amount || expense.amount;
+    expense.category = category || expense.category;
+    expense.description = description || expense.description;
+    expense.date = date || expense.date;
+
+    await expense.save();
+    res.status(200).json({ success: true, message: "Expense Updated", expense });
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
