@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getIncomes,
   createNewIncome,
+  updateIncome, // New action to update income
   clearIncomeCreatedData,
   deleteIncome,
 } from "../../actions/TransactionsAction";
@@ -26,6 +27,8 @@ export default function AddIncome() {
     description: "",
     date: "",
   });
+  const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
+  const [editIncomeId, setEditIncomeId] = useState(null); // Store ID of income to edit
   const [filter, setFilter] = useState("");
 
   const dispatch = useDispatch();
@@ -40,12 +43,24 @@ export default function AddIncome() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(createNewIncome(incomeData));
+    if (isEditMode) {
+      dispatch(updateIncome(editIncomeId, incomeData)).then(() => {
+        toast("Income updated successfully!", {
+          position: "bottom-center",
+          type: "success",
+        });
+        dispatch(getIncomes());
+        setIsEditMode(false); // Reset to add mode
+        setIncomeData({ title: "", amount: "", category: "", description: "", date: "" });
+      });
+    } else {
+      dispatch(createNewIncome(incomeData));
+    }
   };
 
   const handleDelete = (id) => {
     dispatch(deleteIncome(id)).then(() => {
-      toast("Expense deleted successfully!", {
+      toast("Income deleted successfully!", {
         position: "bottom-center",
         type: "success",
       });
@@ -53,7 +68,16 @@ export default function AddIncome() {
   };
 
   const handleEdit = (id) => {
-    console.log("Edit", id);
+    const incomeToEdit = incomes.find((income) => income._id === id);
+    setIncomeData({
+      title: incomeToEdit.title,
+      amount: incomeToEdit.amount,
+      category: incomeToEdit.category,
+      description: incomeToEdit.description,
+      date: incomeToEdit.date,
+    });
+    setEditIncomeId(id);
+    setIsEditMode(true);
   };
 
   useEffect(() => {
@@ -95,17 +119,12 @@ export default function AddIncome() {
     : [];
 
   return (
-    <Grid
-      container
-      spacing={2}
-      justifyContent="center"
-      style={{ marginTop: "50px" }}
-    >
+    <Grid container spacing={2} justifyContent="center" style={{ marginTop: "50px" }}>
       <Grid item xs={10} md={4}>
         <form onSubmit={submitHandler}>
           <Box p={4} boxShadow={3} borderRadius={4}>
             <Typography variant="h4" component="h1" gutterBottom>
-              Add New Income
+              {isEditMode ? "Edit Income" : "Add New Income"}
             </Typography>
 
             <Box mb={3}>
@@ -177,7 +196,7 @@ export default function AddIncome() {
               size="large"
               disabled={loading}
             >
-              Add Income
+              {isEditMode ? "Update Income" : "Add Income"}
             </Button>
           </Box>
         </form>
@@ -193,11 +212,7 @@ export default function AddIncome() {
           style={{ marginBottom: "16px" }}
         />
 
-        <IncomeTable
-          incomes={filteredIncomes}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+        <IncomeTable incomes={filteredIncomes} onEdit={handleEdit} onDelete={handleDelete} />
       </Grid>
     </Grid>
   );

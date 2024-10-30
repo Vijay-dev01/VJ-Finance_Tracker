@@ -6,6 +6,7 @@ const expenseSlice = createSlice({
     loading: false,
     expenses: [],
     isExpenseCreated: false,
+    isExpenseUpdated: false,
     isExpenseDeleted: false,
   },
   reducers: {
@@ -57,6 +58,25 @@ const expenseSlice = createSlice({
         isExpenseCreated: false,
       };
     },
+    updateExpenseRequest(state) {
+      return { ...state, loading: true };
+    },
+    updateExpenseSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        expenses: state.expenses.map((expense) =>
+          expense._id === action.payload._id ? action.payload : expense
+        ),
+        isExpenseUpdated: true,
+      };
+    },
+    updateExpenseFail(state, action) {
+      return { ...state, loading: false, error: action.payload };
+    },
+    clearExpenseUpdated(state) {
+      return { ...state, isExpenseUpdated: false };
+    },
     deleteExpenseRequest(state, action) {
       return {
         ...state,
@@ -91,17 +111,21 @@ const expenseSlice = createSlice({
 const { actions, reducer } = expenseSlice;
 
 export const {
-    expensesRequest,
-    expensesSuccess,
-    expensesFail,
-    newExpenseRequest,
-    newExpenseSuccess,
-    newExpenseFail,
-    deleteExpenseRequest,
-    deleteExpenseSuccess,
-    deleteExpenseFail,
-    clearExpenseCreated,
-    clearExpenseDelete
+  expensesRequest,
+  expensesSuccess,
+  expensesFail,
+  newExpenseRequest,
+  newExpenseSuccess,
+  newExpenseFail,
+  updateExpenseRequest,
+  updateExpenseSuccess,
+  updateExpenseFail,
+  deleteExpenseRequest,
+  deleteExpenseSuccess,
+  deleteExpenseFail,
+  clearExpenseCreated,
+  clearExpenseUpdated,
+  clearExpenseDelete,
 } = actions;
 
 export default reducer;

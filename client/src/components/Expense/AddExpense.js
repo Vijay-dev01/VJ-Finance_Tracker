@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getExpense, createNewExpense, clearExpenseCreatedData, deleteExpense } from "../../actions/TransactionsAction";
+import {
+  getExpense,
+  createNewExpense,
+  updateExpense,
+  clearExpenseCreatedData,
+  deleteExpense,
+} from "../../actions/TransactionsAction";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import {
@@ -21,11 +27,15 @@ export default function AddExpense() {
     description: "",
     date: "",
   });
+  const [isEditMode, setIsEditMode] = useState(false); // Track edit mode
+  const [editExpenseId, setEditExpenseId] = useState(null); // Store ID of income to edit
   const [filter, setFilter] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, isExpenseCreated, expenses } = useSelector((state) => state.expenseState);
+  const { loading, error, isExpenseCreated, expenses } = useSelector(
+    (state) => state.expenseState
+  );
 
   const onChange = (e) => {
     setExpenseData({ ...expenseData, [e.target.name]: e.target.value });
@@ -33,7 +43,25 @@ export default function AddExpense() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(createNewExpense(expenseData));
+    if (isEditMode) {
+      dispatch(updateExpense(editExpenseId, expenseData)).then(() => {
+        toast("Income updated successfully!", {
+          position: "bottom-center",
+          type: "success",
+        });
+        dispatch(getExpense());
+        setIsEditMode(false); // Reset to add mode
+        setExpenseData({
+          title: "",
+          amount: "",
+          category: "",
+          description: "",
+          date: "",
+        });
+      });
+    } else {
+      dispatch(createNewExpense(expenseData));
+    }
   };
 
   const handleDelete = (id) => {
@@ -44,10 +72,18 @@ export default function AddExpense() {
       });
     });
   };
-  
 
   const handleEdit = (id) => {
-    console.log("Edit", id);
+    const expenseToEdit = expenses.find((income) => income._id === id);
+    setExpenseData({
+      title: expenseToEdit.title,
+      amount: expenseToEdit.amount,
+      category: expenseToEdit.category,
+      description: expenseToEdit.description,
+      date: expenseToEdit.date,
+    });
+    setEditExpenseId(id);
+    setIsEditMode(true);
   };
 
   useEffect(() => {
@@ -58,9 +94,15 @@ export default function AddExpense() {
         position: "bottom-center",
         type: "success",
         onClose: () => {
-          setExpenseData({ title: "", amount: "", category: "", description: "", date: "" });
+          setExpenseData({
+            title: "",
+            amount: "",
+            category: "",
+            description: "",
+            date: "",
+          });
           dispatch(clearExpenseCreatedData());
-        //   navigate("/homescreen");
+          //   navigate("/homescreen");
         },
       });
     }
@@ -76,18 +118,24 @@ export default function AddExpense() {
     }
   }, [isExpenseCreated, error, dispatch, navigate]);
 
-  const filteredExpenses = Array.isArray(expenses) ? expenses.filter((expense) =>
-    expense.title.toLowerCase().includes(filter.toLowerCase())
-  ) : [];
-  
+  const filteredExpenses = Array.isArray(expenses)
+    ? expenses.filter((expense) =>
+        expense.title.toLowerCase().includes(filter.toLowerCase())
+      )
+    : [];
 
   return (
-    <Grid container spacing={2} justifyContent="center" style={{ marginTop: "50px" }}>
+    <Grid
+      container
+      spacing={2}
+      justifyContent="center"
+      style={{ marginTop: "50px" }}
+    >
       <Grid item xs={12} md={4}>
         <form onSubmit={submitHandler}>
           <Box p={4} boxShadow={3} borderRadius={4}>
             <Typography variant="h4" component="h1" gutterBottom>
-              Add New Expense
+              {isEditMode ? "Edit Expense" : "Add New Expense"}
             </Typography>
 
             <Box mb={3}>
@@ -159,7 +207,7 @@ export default function AddExpense() {
               size="large"
               disabled={loading}
             >
-              Add Expense
+              {isEditMode ? "Update Expense" : "Add Expense"}
             </Button>
           </Box>
         </form>

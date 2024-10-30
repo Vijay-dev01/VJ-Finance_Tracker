@@ -6,6 +6,7 @@ const incomeSlice = createSlice({
     loading: false,
     incomes: [],
     isIncomeCreated: false,
+    isIncomeUpdated: false,
     isIncomeDeleted: false,
   },
   reducers: {
@@ -57,6 +58,25 @@ const incomeSlice = createSlice({
         isIncomeCreated: false,
       };
     },
+    updateIncomeRequest(state) {
+      return { ...state, loading: true };
+    },
+    updateIncomeSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        incomes: state.incomes.map((income) =>
+          income._id === action.payload._id ? action.payload : income
+        ),
+        isIncomeUpdated: true,
+      };
+    },
+    updateIncomeFail(state, action) {
+      return { ...state, loading: false, error: action.payload };
+    },
+    clearIncomeUpdated(state) {
+      return { ...state, isIncomeUpdated: false };
+    },
     deleteIncomeRequest(state, action) {
       return {
         ...state,
@@ -91,17 +111,21 @@ const incomeSlice = createSlice({
 const { actions, reducer } = incomeSlice;
 
 export const {
-    incomesRequest,
-    incomesSuccess,
-    incomesFail,
-    newIncomeRequest,
-    newIncomeSuccess,
-    newIncomeFail,
-    deleteIncomeRequest,
-    deleteIncomeSuccess,
-    deleteIncomeFail,
-    clearIncomeCreated,
-    clearIncomeDelete
+  incomesRequest,
+  incomesSuccess,
+  incomesFail,
+  newIncomeRequest,
+  newIncomeSuccess,
+  newIncomeFail,
+  updateIncomeRequest,
+  updateIncomeSuccess,
+  updateIncomeFail,
+  deleteIncomeRequest,
+  deleteIncomeSuccess,
+  deleteIncomeFail,
+  clearIncomeCreated,
+  clearIncomeUpdated,
+  clearIncomeDelete,
 } = actions;
 
 export default reducer;

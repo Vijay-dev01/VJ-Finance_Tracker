@@ -11,6 +11,10 @@ import {
   deleteIncomeSuccess,
   clearIncomeCreated,
   clearIncomeDelete,
+  updateIncomeRequest,
+  updateIncomeSuccess,
+  updateIncomeFail,
+  clearIncomeUpdated,
 } from "../slices/IncomeSlice";
 import {
   expensesFail,
@@ -24,6 +28,10 @@ import {
   deleteExpenseSuccess,
   clearExpenseCreated,
   clearExpenseDelete,
+  updateExpenseRequest,
+  updateExpenseSuccess,
+  updateExpenseFail,
+  clearExpenseUpdated,
 } from "../slices/ExpenseSlice";
 
 export const getIncomes = () => async (dispatch) => {
@@ -63,6 +71,24 @@ export const createNewExpense = (expenseData) => async (dispatch) => {
     dispatch(newExpenseFail(error.response.data.message));
   }
 };
+export const updateIncome = (id, incomeData) => async (dispatch) => {
+  try {
+    dispatch(updateIncomeRequest());
+    const { data } = await axios.put(`/api/v1/edit-income/${id}`, incomeData);
+    dispatch(updateIncomeSuccess(data));
+  } catch (error) {
+    dispatch(updateIncomeFail(error.response.data.message));
+  }
+};
+export const updateExpense = (id, expenseData) => async (dispatch) => {
+  try {
+    dispatch(updateExpenseRequest());
+    const { data } = await axios.put(`/api/v1/edit-expense/${id}`, expenseData);
+    dispatch(updateExpenseSuccess(data));
+  } catch (error) {
+    dispatch(updateExpenseFail(error.response.data.message));
+  }
+};
 export const deleteIncome = (id) => async (dispatch) => {
   try {
     dispatch(deleteIncomeRequest());
@@ -86,6 +112,12 @@ export const deleteExpense = (id) => async (dispatch) => {
 
 export const clearIncomeCreatedData = () => (dispatch) => {
   dispatch(clearIncomeCreated());
+};
+export const clearIncomeUpdatedData = () => (dispatch) => {
+  dispatch(clearIncomeUpdated());
+};
+export const clearExpenseUpdatedData = () => (dispatch) => {
+  dispatch(clearExpenseUpdated());
 };
 export const clearIncomeDeleteData = () => (dispatch) => {
   dispatch(clearIncomeDelete());
