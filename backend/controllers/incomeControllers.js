@@ -6,7 +6,9 @@ exports.addIncome = async (req, res) => {
   if (!date) {
     date = new Date();
   }
-
+  if (!category) {
+    category = "General";
+  }
   const income = new IncomeSchema({
     title,
     amount,

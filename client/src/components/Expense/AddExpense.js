@@ -16,6 +16,9 @@ import {
   Box,
   Grid,
   InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import ExpenseTable from "./ExpenseTable";
 
@@ -23,7 +26,7 @@ export default function AddExpense() {
   const [expenseData, setExpenseData] = useState({
     title: "",
     amount: "",
-    category: "",
+    category: "General",
     description: "",
     date: "",
   });
@@ -102,7 +105,6 @@ export default function AddExpense() {
             date: "",
           });
           dispatch(clearExpenseCreatedData());
-          //   navigate("/homescreen");
         },
       });
     }
@@ -162,14 +164,25 @@ export default function AddExpense() {
             </Box>
 
             <Box mb={3}>
-              <TextField
-                label="Category"
-                name="category"
-                variant="outlined"
-                fullWidth
-                value={expenseData.category}
-                onChange={onChange}
-              />
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  name="category"
+                  label="Category"
+                  value={expenseData.category}
+                  onChange={onChange}
+                >
+                  <MenuItem value="General">General</MenuItem>
+                  <MenuItem value="Food">Food</MenuItem>
+                  <MenuItem value="Fuel">Fuel</MenuItem>
+                  <MenuItem value="Grocery">Grocery</MenuItem>
+                  <MenuItem value="Shopping">Shopping</MenuItem>
+                  <MenuItem value="Travel">Travel</MenuItem>
+                  <MenuItem value="Fun">Fun</MenuItem>
+                  <MenuItem value="UnKnown_Expenses">UnKnown Expenses</MenuItem>
+                  <MenuItem value="Health_Care">Health Care</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
 
             <Box mb={3}>
@@ -193,7 +206,7 @@ export default function AddExpense() {
                 fullWidth
                 value={expenseData.date}
                 onChange={onChange}
-                InputLabelProps={{
+                InputLabel={{
                   shrink: true,
                 }}
               />

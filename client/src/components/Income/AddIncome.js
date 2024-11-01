@@ -16,6 +16,9 @@ import {
   Box,
   Grid,
   InputLabel,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import IncomeTable from "./IncomeTable";
 
@@ -23,7 +26,7 @@ export default function AddIncome() {
   const [incomeData, setIncomeData] = useState({
     title: "",
     amount: "",
-    category: "",
+    category: "General",
     description: "",
     date: "",
   });
@@ -149,16 +152,21 @@ export default function AddIncome() {
                 onChange={onChange}
               />
             </Box>
-
             <Box mb={3}>
-              <TextField
-                label="Category"
-                name="category"
-                variant="outlined"
-                fullWidth
-                value={incomeData.category}
-                onChange={onChange}
-              />
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  name="category"
+                  label="Category"
+                  value={incomeData.category}
+                  onChange={onChange}
+                >
+                  <MenuItem value="General">General</MenuItem>
+                  <MenuItem value="Salary">Salary</MenuItem>
+                  <MenuItem value="Investment">Investment</MenuItem>
+                  <MenuItem value="Freelance">Freelance</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
 
             <Box mb={3}>
