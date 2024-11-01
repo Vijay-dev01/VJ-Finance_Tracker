@@ -101,3 +101,47 @@ exports.deleteIncome = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.getIncomeSummary = async (req, res) => {
+  try {
+    const summary = await IncomeSchema.aggregate([
+      {
+        $match: { user: req.user._id }, // Match the incomes for the authenticated user
+      },
+      {
+        $group: {
+          _id: "$category", // Group by category
+          totalAmount: { $sum: "$amount" }, // Sum the amounts
+        },
+      },
+      {
+        $group: {
+          _id: null, // Group all categories together
+          categories: {
+            $push: { category: "$_id", totalAmount: "$totalAmount" },
+          }, // Push each category and its total amount
+          overallTotal: { $sum: "$totalAmount" }, // Sum total amounts for all categories
+        },
+      },
+      {
+        $project: {
+          _id: 0, // Exclude the default _id
+          categories: 1, // Include the categories
+          overallTotal: 1, // Include the overall total
+        },
+      },
+    ]);
+
+    // If there are no expenses, return a message
+    if (!summary || summary.length === 0) {
+      return res.status(404).json({ message: "No expenses found" });
+    }
+
+    res.status(200).json({
+      categories: summary[0].categories, // Categories with their total amounts
+      overallTotal: summary[0].overallTotal, // Overall total of expenses
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
