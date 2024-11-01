@@ -38,7 +38,7 @@ export default function ExpenseTable({ expenses, onEdit, onDelete }) {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{expense.title}</TableCell>
                 <TableCell>{expense.category}</TableCell>
-                <TableCell>{expense.date}</TableCell>
+                <TableCell>{new Date(expense.date).toLocaleDateString("en-GB")}</TableCell>
                 <TableCell>{expense.amount}</TableCell>
                 <TableCell>{expense.description}</TableCell>
                 <TableCell>

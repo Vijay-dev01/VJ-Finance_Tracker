@@ -38,7 +38,7 @@ export default function IncomeTable({ incomes, onEdit, onDelete }) {
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>{income.title}</TableCell>
                 <TableCell>{income.category}</TableCell>
-                <TableCell>{income.date}</TableCell>
+                <TableCell> {new Date(income.date).toLocaleDateString("en-GB")}</TableCell>
                 <TableCell>{income.amount}</TableCell>
                 <TableCell>{income.description}</TableCell>
                 <TableCell>
