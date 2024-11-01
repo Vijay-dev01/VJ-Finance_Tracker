@@ -1,8 +1,14 @@
 const ExpenseSchema = require("../models/expenseModel");
 
 exports.addExpense = async (req, res) => {
-  const { title, amount, category, description, date } = req.body;
+  let { title, amount, category, description, date } = req.body;
 
+  if (!date) {
+    date = new Date();
+  }
+  if (!category) {
+    category = "General";
+  }
   const expense = new ExpenseSchema({
     title,
     amount,

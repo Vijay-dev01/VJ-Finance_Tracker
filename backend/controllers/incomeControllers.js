@@ -1,7 +1,11 @@
 const IncomeSchema = require("../models/incomeModel");
 
 exports.addIncome = async (req, res) => {
-  const { title, amount, category, description, date } = req.body;
+  let { title, amount, category, description, date } = req.body;
+
+  if (!date) {
+    date = new Date();
+  }
 
   const income = new IncomeSchema({
     title,
@@ -55,7 +59,9 @@ exports.editIncome = async (req, res) => {
 
     // Check if the user editing the income is the same as the one who created it
     if (income.user.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ message: "Not authorized to edit this income" });
+      return res
+        .status(403)
+        .json({ message: "Not authorized to edit this income" });
     }
 
     // Update income details
