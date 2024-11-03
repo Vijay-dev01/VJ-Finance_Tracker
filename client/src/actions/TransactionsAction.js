@@ -39,6 +39,11 @@ import {
   expensesSummarySuccess,
   expensesSummaryFail,
 } from "../slices/ExpenseSlice";
+import {
+  fetchFinancialSummaryFail,
+  fetchFinancialSummaryRequest,
+  fetchFinancialSummarySuccess,
+} from "../slices/financialSummarySlice";
 
 export const getIncomes = () => async (dispatch) => {
   try {
@@ -132,6 +137,16 @@ export const getExpenseSummary = () => async (dispatch) => {
     dispatch(expensesSummarySuccess(data));
   } catch (error) {
     dispatch(expensesSummaryFail(error.response.data.message));
+  }
+};
+
+export const fetchFinancialSummary = () => async (dispatch) => {
+  dispatch(fetchFinancialSummaryRequest());
+  try {
+    const { data } = await axios.get("/api/v1/get-financial-summary");
+    dispatch(fetchFinancialSummarySuccess(data));
+  } catch (error) {
+    dispatch(fetchFinancialSummaryFail(error.response.data.message));
   }
 };
 
