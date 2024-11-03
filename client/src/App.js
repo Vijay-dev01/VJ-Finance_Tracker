@@ -15,6 +15,8 @@ import HomeScreen from "./components/HomeScreen";
 import Dashboard from "./scenes/Dashboard";
 import AddIncome from "./components/Income/AddIncome";
 import AddExpense from "./components/Expense/AddExpense";
+import ExpenseSummary from "./components/Expense/ExpenseSummary";
+import IncomeSummary from "./components/Income/IncomeSummary";
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
             <Route path='/dashboard' element={ <Dashboard />}></Route>
             <Route path='/income' element={ <AddIncome />}></Route>
             <Route path='/expense' element={ <AddExpense />}></Route>
+            <Route path='/incomesum' element={ <IncomeSummary />}></Route>
+            <Route path='/expensesum' element={ <ExpenseSummary />}></Route>
           </Routes>
         </HelmetProvider>
       </BrowserRouter>

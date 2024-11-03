@@ -15,6 +15,9 @@ import {
   updateIncomeSuccess,
   updateIncomeFail,
   clearIncomeUpdated,
+  incomesSummaryRequest,
+  incomesSummarySuccess,
+  incomesSummaryFail,
 } from "../slices/IncomeSlice";
 import {
   expensesFail,
@@ -32,6 +35,9 @@ import {
   updateExpenseSuccess,
   updateExpenseFail,
   clearExpenseUpdated,
+  expensesSummaryRequest,
+  expensesSummarySuccess,
+  expensesSummaryFail,
 } from "../slices/ExpenseSlice";
 
 export const getIncomes = () => async (dispatch) => {
@@ -107,6 +113,25 @@ export const deleteExpense = (id) => async (dispatch) => {
     dispatch(getExpense());
   } catch (error) {
     dispatch(deleteExpenseFail(error.response.data.message));
+  }
+};
+
+export const getIncomeSummary = () => async (dispatch) => {
+  try {
+    dispatch(incomesSummaryRequest());
+    const { data } = await axios.get(`/api/v1/get-income-summary`);
+    dispatch(incomesSummarySuccess(data));
+  } catch (error) {
+    dispatch(incomesSummaryFail(error.response.data.message));
+  }
+};
+export const getExpenseSummary = () => async (dispatch) => {
+  try {
+    dispatch(expensesSummaryRequest());
+    const { data } = await axios.get(`/api/v1/get-expense-summary`);
+    dispatch(expensesSummarySuccess(data));
+  } catch (error) {
+    dispatch(expensesSummaryFail(error.response.data.message));
   }
 };
 

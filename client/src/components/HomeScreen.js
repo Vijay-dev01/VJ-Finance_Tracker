@@ -14,6 +14,8 @@ import Profile from './user/Profile';
 import Dashboard from '../scenes/Dashboard';
 import AddIncome from './Income/AddIncome';
 import AddExpense from './Expense/AddExpense';
+import IncomeSummary from './Income/IncomeSummary';
+import ExpenseSummary from './Expense/ExpenseSummary';
 
 const NAVIGATION = [
   {
@@ -34,6 +36,16 @@ const NAVIGATION = [
   {
     segment: 'expense',
     title: 'Expense',
+    icon: <MoneyOffIcon />,
+  },
+  {
+    segment: 'incomesum',
+    title: 'Income-Summary',
+    icon: <AttachMoneyIcon />,
+  },
+  {
+    segment: 'expensesum',
+    title: 'Expense-Summary',
     icon: <MoneyOffIcon />,
   },
 ];
@@ -89,6 +101,10 @@ function HomeScreen(props) {
         return <AddIncome />;
       case '/expense':
         return <AddExpense />;
+      case '/incomesum':
+        return <IncomeSummary />;
+      case '/expensesum':
+        return <ExpenseSummary />;
       default:
         return <div>Welcome to the Dashboard</div>;
     }

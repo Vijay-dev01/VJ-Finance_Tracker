@@ -5,6 +5,7 @@ const incomeSlice = createSlice({
   initialState: {
     loading: false,
     incomes: [],
+    incomeSummary: [],
     isIncomeCreated: false,
     isIncomeUpdated: false,
     isIncomeDeleted: false,
@@ -105,6 +106,27 @@ const incomeSlice = createSlice({
         isIncomeDeleted: false,
       };
     },
+    incomesSummaryRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    incomesSummarySuccess(state, action) {
+      console.log("API response data:", action.payload); 
+      return {
+        ...state,
+        loading: false,
+        incomeSummary: action.payload,
+      };
+    },
+    incomesSummaryFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -123,6 +145,9 @@ export const {
   deleteIncomeRequest,
   deleteIncomeSuccess,
   deleteIncomeFail,
+  incomesSummaryRequest,
+  incomesSummarySuccess,
+  incomesSummaryFail,
   clearIncomeCreated,
   clearIncomeUpdated,
   clearIncomeDelete,

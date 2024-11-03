@@ -5,6 +5,7 @@ const expenseSlice = createSlice({
   initialState: {
     loading: false,
     expenses: [],
+    expenseSummary: [],
     isExpenseCreated: false,
     isExpenseUpdated: false,
     isExpenseDeleted: false,
@@ -105,6 +106,27 @@ const expenseSlice = createSlice({
         isExpenseDeleted: false,
       };
     },
+    expensesSummaryRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    expensesSummarySuccess(state, action) {
+      console.log("API response data:", action.payload); 
+      return {
+        ...state,
+        loading: false,
+        expenseSummary: action.payload,
+      };
+    },
+    expensesSummaryFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -123,6 +145,9 @@ export const {
   deleteExpenseRequest,
   deleteExpenseSuccess,
   deleteExpenseFail,
+  expensesSummaryRequest,
+  expensesSummarySuccess,
+  expensesSummaryFail,
   clearExpenseCreated,
   clearExpenseUpdated,
   clearExpenseDelete,
