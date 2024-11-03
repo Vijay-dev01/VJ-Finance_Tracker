@@ -5,6 +5,7 @@ const {
   editExpense,
   getExpenseSummary,
 } = require("../controllers/expenseControllers");
+const { getFinancialSummary } = require("../controllers/getFinanceSummaryController");
 const {
   addIncome,
   getIncomes,
@@ -26,7 +27,8 @@ router
   .put("/edit-expense/:id", isAuthenticatedUser, editExpense)
   .delete("/delete-expense/:id", isAuthenticatedUser, deleteExpense)
   .get("/get-expense-summary", isAuthenticatedUser, getExpenseSummary)
-  .get("/get-income-summary", isAuthenticatedUser, getIncomeSummary);
+  .get("/get-income-summary", isAuthenticatedUser, getIncomeSummary)
+  .get("/get-financial-summary", isAuthenticatedUser, getFinancialSummary);
 
 
 module.exports = router;
