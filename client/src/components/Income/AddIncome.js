@@ -165,6 +165,9 @@ export default function AddIncome() {
                   <MenuItem value="Salary">Salary</MenuItem>
                   <MenuItem value="Investment">Investment</MenuItem>
                   <MenuItem value="Freelance">Freelance</MenuItem>
+                  <MenuItem value="SIP">SIP</MenuItem>
+                  <MenuItem value="Gold">Gold</MenuItem>
+                  <MenuItem value="Bussiness">Bussiness savings</MenuItem>
                 </Select>
               </FormControl>
             </Box>

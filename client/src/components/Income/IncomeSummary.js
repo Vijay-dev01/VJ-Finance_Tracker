@@ -34,8 +34,30 @@ const IncomeSummary = () => {
       {
         label: "Incomes",
         data: data.map((item) => item.value),
-        backgroundColor: ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"],
-        hoverBackgroundColor: ["#007BFE", "#00B49F", "#FFBB28", "#FF7042"],
+        backgroundColor: [
+          "#0088FE",  // Blue
+          "#00C49F",  // Green
+          "#FFBB28",  // Yellow
+          "#FF8042",  // Orange
+          "#A569BD",  // Purple
+          "#F39C12",  // Amber
+          "#E74C3C",  // Red
+          "#5DADE2",  // Light Blue
+          "#52BE80",  // Lime Green
+          "#AF7AC5"   // Lavender
+        ],
+        hoverBackgroundColor: [
+          "#007BFE",  // Dark Blue
+          "#00B49F",  // Dark Green
+          "#FFBB00",  // Gold
+          "#FF7042",  // Dark Orange
+          "#9B59B6",  // Dark Purple
+          "#D68910",  // Dark Amber
+          "#C0392B",  // Dark Red
+          "#3498DB",  // Medium Blue
+          "#45B39D",  // Teal
+          "#8E44AD"   // Deep Lavender
+        ],
       },
     ],
   };
