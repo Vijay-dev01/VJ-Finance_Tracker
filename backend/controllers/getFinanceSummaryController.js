@@ -54,6 +54,7 @@ exports.getFinancialSummary = async (req, res) => {
     const totalInvestment =
       (incomeTotals["Investment"] || 0) +
       (incomeTotals["SIP"] || 0) +
+      (incomeTotals["Sheet"] || 0) +
       (incomeTotals["Gold"] || 0);
 
     const totalBusinessSavings = incomeTotals["Bussiness"] || 0;
