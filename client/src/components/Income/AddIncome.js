@@ -169,6 +169,7 @@ export default function AddIncome() {
                   <MenuItem value="Gold">Gold</MenuItem>
                   <MenuItem value="Sheet">Sheet</MenuItem>
                   <MenuItem value="Bussiness">Bussiness savings</MenuItem>
+                  <MenuItem value="Balance">Balance</MenuItem>
                 </Select>
               </FormControl>
             </Box>

@@ -38,6 +38,7 @@ exports.getFinancialSummary = async (req, res) => {
       (incomeTotals["Investment"] || 0) +
       (incomeTotals["SIP"] || 0) +
       (incomeTotals["Gold"] || 0) +
+      (incomeTotals["Sheet"] || 0) +
       (incomeTotals["Bussiness"] || 0);
 
     const totalExpenses =
@@ -61,8 +62,11 @@ exports.getFinancialSummary = async (req, res) => {
 
     const balance =
       (incomeTotals["Salary"] || 0) +
+      (incomeTotals["Balance"] || 0) +
       (incomeTotals["Freelance"] || 0) -
-      totalExpenses;
+      totalExpenses -
+      totalInvestment -
+      totalBusinessSavings;
 
     res.status(200).json({
       totalSavings,

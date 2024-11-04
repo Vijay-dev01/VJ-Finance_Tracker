@@ -17,8 +17,14 @@ import AddIncome from "./components/Income/AddIncome";
 import AddExpense from "./components/Expense/AddExpense";
 import ExpenseSummary from "./components/Expense/ExpenseSummary";
 import IncomeSummary from "./components/Income/IncomeSummary";
+import { useEffect } from "react";
+import store from "./store"
+import { loadUser } from "./actions/UserAction";
 
 function App() {
+  useEffect(() => {
+    store.dispatch(loadUser)
+  })
   return (
     <>
       <BrowserRouter>
