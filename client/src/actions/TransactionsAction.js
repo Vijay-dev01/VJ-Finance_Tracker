@@ -43,6 +43,9 @@ import {
   fetchFinancialSummaryFail,
   fetchFinancialSummaryRequest,
   fetchFinancialSummarySuccess,
+  updateBalanceFail,
+  updateBalanceRequest,
+  updateBalanceSuccess,
 } from "../slices/financialSummarySlice";
 
 export const getIncomes = () => async (dispatch) => {
@@ -147,6 +150,20 @@ export const fetchFinancialSummary = () => async (dispatch) => {
     dispatch(fetchFinancialSummarySuccess(data));
   } catch (error) {
     dispatch(fetchFinancialSummaryFail(error.response.data.message));
+  }
+};
+
+export const updateBalanceAmount = (amount) => async (dispatch) => {
+  try {
+    dispatch(updateBalanceRequest());
+
+    const { data } = await axios.post("/api/v1/update-balance", { amount });
+
+    dispatch(updateBalanceSuccess(data.balance));
+    // Fetch updated financial summary
+    dispatch(fetchFinancialSummary());
+  } catch (error) {
+    dispatch(updateBalanceFail(error.response.data.message));
   }
 };
 

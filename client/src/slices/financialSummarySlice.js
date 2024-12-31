@@ -27,6 +27,31 @@ const financialSummarySlice = createSlice({
         error: action.payload,
       };
     },
+    updateBalanceRequest(state) {
+      return {
+        ...state,
+        loading: true,
+      };
+    },
+    updateBalanceSuccess(state, action) {
+      return {
+        ...state,
+        loading: false,
+        if (summaryData) {
+          summaryData = {
+            ...state.summaryData,
+            balance: action.payload.amount,
+          };
+        }
+      };
+    },
+    updateBalanceFail(state, action) {
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    },
   },
 });
 
@@ -36,6 +61,9 @@ export const {
   fetchFinancialSummaryRequest,
   fetchFinancialSummarySuccess,
   fetchFinancialSummaryFail,
+  updateBalanceRequest,
+  updateBalanceSuccess,
+  updateBalanceFail,
 } = actions;
 
 export default reducer;

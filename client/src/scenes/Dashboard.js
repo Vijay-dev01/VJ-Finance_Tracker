@@ -6,6 +6,11 @@ import {
   Paper,
   Typography,
   Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import {
   Chart,
@@ -13,20 +18,34 @@ import {
   LinearScale,
   BarElement,
   LineElement,
-  PointElement,  // Import PointElement
+  PointElement, // Import PointElement
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
-import { fetchFinancialSummary } from "../actions/TransactionsAction";
+import {
+  fetchFinancialSummary,
+  updateBalanceAmount,
+} from "../actions/TransactionsAction";
 
 // Register all necessary elements for both Line and Bar charts
-Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, Title, Tooltip, Legend);
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const [showBarGraph, setShowBarGraph] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newBalance, setNewBalance] = useState("");
 
   // Select financial summary data from the Redux store
   const { summaryData } = useSelector((state) => state.financialSummaryState);
@@ -34,6 +53,14 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(fetchFinancialSummary());
   }, [dispatch]);
+
+  const handleUpdateBalance = () => {
+    if (newBalance) {
+      dispatch(updateBalanceAmount(Number(newBalance)));
+      setOpenDialog(false);
+      setNewBalance("");
+    }
+  };
 
   // Fallback values if data is not yet loaded
   const totalSavings = summaryData?.totalSavings || 0;
@@ -43,17 +70,29 @@ const Dashboard = () => {
   const balance = summaryData?.balance || 0;
 
   const chartData = {
-    labels: ["Total Savings", "Total Expenses", "Investment", "Business Savings", "Balance"],
+    labels: [
+      "Total Savings",
+      "Total Expenses",
+      "Investment",
+      "Business Savings",
+      "Balance",
+    ],
     datasets: [
       {
         label: "Financial Summary",
-        data: [totalSavings, totalExpenses, totalInvestment, totalBusinessSavings, balance],
+        data: [
+          totalSavings,
+          totalExpenses,
+          totalInvestment,
+          totalBusinessSavings,
+          balance,
+        ],
         backgroundColor: [
           "rgba(75, 192, 192, 0.6)",
           "rgba(255, 99, 132, 0.6)",
           "rgba(54, 162, 235, 0.6)",
           "rgba(255, 206, 86, 0.6)",
-          "rgba(153, 102, 255, 0.6)"
+          "rgba(153, 102, 255, 0.6)",
         ],
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 2,
@@ -69,7 +108,9 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: showBarGraph ? "Financial Summary - Bar Chart" : "Financial Summary - Line Chart",
+        text: showBarGraph
+          ? "Financial Summary - Bar Chart"
+          : "Financial Summary - Line Chart",
       },
     },
   };
@@ -83,38 +124,91 @@ const Dashboard = () => {
       <Grid container spacing={2} sx={{ marginBottom: 3 }}>
         <Grid item xs={2.4}>
           <Paper sx={{ padding: 2 }}>
-            <Typography variant="h6" align="center">Total Savings</Typography>
-            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>{totalSavings}</Typography>
+            <Typography variant="h6" align="center">
+              Total Savings
+            </Typography>
+            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>
+              {totalSavings}
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={2.4}>
           <Paper sx={{ padding: 2 }}>
-            <Typography variant="h6" align="center">Total Expenses</Typography>
-            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>{totalExpenses}</Typography>
+            <Typography variant="h6" align="center">
+              Total Expenses
+            </Typography>
+            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>
+              {totalExpenses}
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={2.4}>
           <Paper sx={{ padding: 2 }}>
-            <Typography variant="h6" align="center">Investment</Typography>
-            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>{totalInvestment}</Typography>
+            <Typography variant="h6" align="center">
+              Investment
+            </Typography>
+            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>
+              {totalInvestment}
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={2.4}>
           <Paper sx={{ padding: 2 }}>
-            <Typography variant="h6" align="center">Business Savings</Typography>
-            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>{totalBusinessSavings}</Typography>
+            <Typography variant="h6" align="center">
+              Business Savings
+            </Typography>
+            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>
+              {totalBusinessSavings}
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={2.4}>
           <Paper sx={{ padding: 2 }}>
-            <Typography variant="h6" align="center">Balance</Typography>
-            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>{balance}</Typography>
+            <Typography variant="h6" align="center">
+              Balance
+            </Typography>
+            <Typography variant="h4" align="center" sx={{ marginTop: 1 }}>
+              {summaryData?.balance || 0}
+            </Typography>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => setOpenDialog(true)}
+              sx={{ marginTop: 1, width: "100%" }}
+            >
+              Update Balance
+            </Button>
           </Paper>
         </Grid>
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+          <DialogTitle>Update Balance Amount</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="New Balance Amount"
+              type="number"
+              fullWidth
+              variant="outlined"
+              value={newBalance}
+              onChange={(e) => setNewBalance(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+            <Button onClick={handleUpdateBalance} variant="contained">
+              Update
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Grid>
 
       {/* Button to toggle between bar and line chart */}
-      <Button variant="contained" onClick={toggleGraphType} sx={{ marginBottom: 3 }}>
+      <Button
+        variant="contained"
+        onClick={toggleGraphType}
+        sx={{ marginBottom: 3 }}
+      >
         {showBarGraph ? "Show Line Graph" : "Show Bar Graph"}
       </Button>
 

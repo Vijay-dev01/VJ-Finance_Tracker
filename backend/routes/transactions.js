@@ -1,3 +1,4 @@
+const { updateBalance } = require("../controllers/balanceController");
 const {
   addExpense,
   getExpense,
@@ -28,7 +29,8 @@ router
   .delete("/delete-expense/:id", isAuthenticatedUser, deleteExpense)
   .get("/get-expense-summary", isAuthenticatedUser, getExpenseSummary)
   .get("/get-income-summary", isAuthenticatedUser, getIncomeSummary)
-  .get("/get-financial-summary", isAuthenticatedUser, getFinancialSummary);
+  .get("/get-financial-summary", isAuthenticatedUser, getFinancialSummary)
+  .post("/update-balance", isAuthenticatedUser, updateBalance);
 
 
 module.exports = router;
