@@ -14,6 +14,7 @@ const {
   editIncome,
   getIncomeSummary,
 } = require("../controllers/incomeControllers");
+const { sendReportByEmail } = require("../mail/mail");
 const { isAuthenticatedUser } = require("../middleware/authenticate");
 
 const router = require("express").Router();
@@ -30,7 +31,8 @@ router
   .get("/get-expense-summary", isAuthenticatedUser, getExpenseSummary)
   .get("/get-income-summary", isAuthenticatedUser, getIncomeSummary)
   .get("/get-financial-summary", isAuthenticatedUser, getFinancialSummary)
-  .post("/update-balance", isAuthenticatedUser, updateBalance);
+  .post("/update-balance", isAuthenticatedUser, updateBalance)
+  .post("/send-report", isAuthenticatedUser, sendReportByEmail);
 
 
 module.exports = router;

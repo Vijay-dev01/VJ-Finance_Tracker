@@ -47,6 +47,7 @@ import {
   updateBalanceRequest,
   updateBalanceSuccess,
 } from "../slices/financialSummarySlice";
+import { sendReportFail, sendReportRequest, sendReportSuccess } from "../slices/reportSlice";
 
 export const getIncomes = () => async (dispatch) => {
   try {
@@ -164,6 +165,32 @@ export const updateBalanceAmount = (amount) => async (dispatch) => {
     dispatch(fetchFinancialSummary());
   } catch (error) {
     dispatch(updateBalanceFail(error.response.data.message));
+  }
+};
+
+export const sendReport = (email) => async (dispatch) => {
+  try {
+    dispatch(sendReportRequest());
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    await axios.post(
+      '/api/v1/send-report',
+      { email },
+      config
+    );
+
+    dispatch(sendReportSuccess());
+  } catch (error) {
+    dispatch(
+      sendReportFail(
+        error.response?.data?.message || 'Failed to send report'
+      )
+    );
   }
 };
 

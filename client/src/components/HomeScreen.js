@@ -16,6 +16,7 @@ import AddIncome from './Income/AddIncome';
 import AddExpense from './Expense/AddExpense';
 import IncomeSummary from './Income/IncomeSummary';
 import ExpenseSummary from './Expense/ExpenseSummary';
+import SendReportButton from './report/Email';
 
 const NAVIGATION = [
   {
@@ -46,6 +47,11 @@ const NAVIGATION = [
   {
     segment: 'expensesum',
     title: 'Expense-Summary',
+    icon: <MoneyOffIcon />,
+  },
+  {
+    segment: 'reportsummary',
+    title: 'Report Summary',
     icon: <MoneyOffIcon />,
   },
 ];
@@ -105,6 +111,8 @@ function HomeScreen(props) {
         return <IncomeSummary />;
       case '/expensesum':
         return <ExpenseSummary />;
+      case '/reportsummary':
+        return <SendReportButton />;
       default:
         return <div>Welcome to the Dashboard</div>;
     }

@@ -5,6 +5,7 @@ import userReducer from "./slices/UserSlice";
 import incomeReducer from "./slices/IncomeSlice";
 import expenseReducer from "./slices/ExpenseSlice";
 import financialSummaryReducer from "./slices/financialSummarySlice";
+import reportReducer from "./slices/reportSlice";
 
 const reducer = combineReducers({
   authState: authReducer,
@@ -12,6 +13,7 @@ const reducer = combineReducers({
   incomeState: incomeReducer,
   expenseState: expenseReducer,
   financialSummaryState: financialSummaryReducer,
+  report: reportReducer,
 });
 
 const store = configureStore({

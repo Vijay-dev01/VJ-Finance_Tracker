@@ -37,12 +37,12 @@ const financialSummarySlice = createSlice({
       return {
         ...state,
         loading: false,
-        if (summaryData) {
+        if(summaryData) {
           summaryData = {
             ...state.summaryData,
             balance: action.payload.amount,
           };
-        }
+        },
       };
     },
     updateBalanceFail(state, action) {
