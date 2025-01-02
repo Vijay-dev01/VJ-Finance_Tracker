@@ -26,7 +26,7 @@ const STYLES = {
   }
 };
 
-function createTable(doc, headers, rows, startX, startY, options = {}) {
+function createTable(doc, headers, rows, startX, startY) {
   const { cellPadding, cellHeight } = STYLES.table;
   const columnWidth = (doc.page.width - startX * 2) / headers.length;
   let currentY = startY;
@@ -86,29 +86,59 @@ async function generateFinancialSummary(userId) {
     ])
   ]);
 
-  const incomeTotals = incomeSummary.reduce((acc, { _id, totalAmount }) => {
-    acc[_id] = totalAmount;
+  const incomeTotals = incomeSummary.reduce((acc, item) => {
+    acc[item._id] = item.totalAmount;
     return acc;
   }, {});
 
-  const expenseTotals = expenseSummary.reduce((acc, { _id, totalAmount }) => {
-    acc[_id] = totalAmount;
+  const expenseTotals = expenseSummary.reduce((acc, item) => {
+    acc[item._id] = item.totalAmount;
     return acc;
   }, {});
 
-  const totalIncome = Object.values(incomeTotals).reduce((a, b) => a + b, 0);
-  const totalExpenses = Object.values(expenseTotals).reduce((a, b) => a + b, 0);
-  const totalInvestment = ['Investment', 'SIP', 'Gold']
-    .reduce((sum, category) => sum + (incomeTotals[category] || 0), 0);
+  const totalSavings =
+    (incomeTotals["General"] || 0) +
+    (incomeTotals["Investment"] || 0) +
+    (incomeTotals["SIP"] || 0) +
+    (incomeTotals["Gold"] || 0) +
+    (incomeTotals["Sheet"] || 0) +
+    (incomeTotals["Bussiness"] || 0);
+
+  const totalExpenses =
+    (expenseTotals["General"] || 0) +
+    (expenseTotals["Food"] || 0) +
+    (expenseTotals["Fuel"] || 0) +
+    (expenseTotals["Grocery"] || 0) +
+    (expenseTotals["Shopping"] || 0) +
+    (expenseTotals["Travel"] || 0) +
+    (expenseTotals["Fun"] || 0) +
+    (expenseTotals["UnKnown_Expenses"] || 0) +
+    (expenseTotals["Health_Care"] || 0);
+
+  const totalInvestment =
+    (incomeTotals["Investment"] || 0) +
+    (incomeTotals["SIP"] || 0) +
+    (incomeTotals["Sheet"] || 0) +
+    (incomeTotals["Gold"] || 0);
+
+  const totalBusinessSavings = incomeTotals["Bussiness"] || 0;
+
+  const balance =
+    (incomeTotals["Salary"] || 0) +
+    (incomeTotals["Balance"] || 0) +
+    (incomeTotals["Freelance"] || 0) -
+    totalExpenses -
+    totalInvestment -
+    totalBusinessSavings;
 
   return {
     incomeTotals,
     expenseTotals,
-    totalIncome,
+    totalSavings,
     totalExpenses,
     totalInvestment,
-    totalSavings: totalIncome - totalExpenses - totalInvestment,
-    businessSavings: incomeTotals["Business"] || 0
+    totalBusinessSavings,
+    balance
   };
 }
 
@@ -159,12 +189,11 @@ async function createPDFReport(summary) {
 
   // Financial Summary Box
   const summaryItems = [
-    ['Total Income:', summary.totalIncome],
+    ['Total Savings:', summary.totalSavings],
     ['Total Expenses:', summary.totalExpenses],
     ['Total Investment:', summary.totalInvestment],
-    ['Total Savings:', summary.totalSavings],
-    ['Business Savings:', summary.businessSavings],
-    ['Net Balance:', summary.totalIncome - summary.totalExpenses]
+    ['Total Business Savings:', summary.totalBusinessSavings],
+    ['Net Balance:', summary.balance]
   ];
 
   doc.fontSize(STYLES.fonts.subheader)
@@ -216,5 +245,22 @@ exports.sendReportByEmail = async (req, res) => {
   } catch (error) {
     console.error("Server error:", error);
     res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+exports.getFinancialSummary = async (req, res) => {
+  try {
+    const summary = await generateFinancialSummary(req.user._id);
+
+    res.status(200).json({
+      totalSavings: summary.totalSavings,
+      totalExpenses: summary.totalExpenses,
+      totalInvestment: summary.totalInvestment,
+      totalBusinessSavings: summary.totalBusinessSavings,
+      balance: summary.balance
+    });
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).json({ message: "Server Error" });
   }
 };
