@@ -13,6 +13,71 @@ exports.sendReportByEmail = async (req, res) => {
       createdAt: -1,
     });
 
+    const incomeSummary = await IncomeSchema.aggregate([
+      { $match: { user: req.user._id } },
+      {
+        $group: {
+          _id: "$category",
+          totalAmount: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const expenseSummary = await ExpenseSchema.aggregate([
+      { $match: { user: req.user._id } },
+      {
+        $group: {
+          _id: "$category",
+          totalAmount: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const incomeTotals = incomeSummary.reduce((acc, item) => {
+      acc[item._id] = item.totalAmount;
+      return acc;
+    }, {});
+
+    const expenseTotals = expenseSummary.reduce((acc, item) => {
+      acc[item._id] = item.totalAmount;
+      return acc;
+    }, {});
+
+    const totalSavings =
+      (incomeTotals["General"] || 0) +
+      (incomeTotals["Investment"] || 0) +
+      (incomeTotals["SIP"] || 0) +
+      (incomeTotals["Gold"] || 0) +
+      (incomeTotals["Sheet"] || 0) +
+      (incomeTotals["Bussiness"] || 0);
+
+    const totalExpenses =
+      (expenseTotals["General"] || 0) +
+      (expenseTotals["Food"] || 0) +
+      (expenseTotals["Fuel"] || 0) +
+      (expenseTotals["Grocery"] || 0) +
+      (expenseTotals["Shopping"] || 0) +
+      (expenseTotals["Travel"] || 0) +
+      (expenseTotals["Fun"] || 0) +
+      (expenseTotals["UnKnown_Expenses"] || 0) +
+      (expenseTotals["Health_Care"] || 0);
+
+    const totalInvestment =
+      (incomeTotals["Investment"] || 0) +
+      (incomeTotals["SIP"] || 0) +
+      (incomeTotals["Sheet"] || 0) +
+      (incomeTotals["Gold"] || 0);
+
+    const totalBusinessSavings = incomeTotals["Bussiness"] || 0;
+
+    const balance =
+      (incomeTotals["Salary"] || 0) +
+      (incomeTotals["Balance"] || 0) +
+      (incomeTotals["Freelance"] || 0) -
+      totalExpenses -
+      totalInvestment -
+      totalBusinessSavings;
+
     // Generate a PDF report
     const doc = new PDFDocument();
     let buffers = [];
@@ -75,7 +140,15 @@ exports.sendReportByEmail = async (req, res) => {
           `Title: ${expense.title}, Amount: $${expense.amount}, Category: ${expense.category}, Date: ${expense.date}`
         );
     });
+    doc.moveDown();
 
+    // Financial Summary Section
+    doc.fontSize(16).text("Financial Summary:");
+    doc.fontSize(12).text(`Total Savings: $${totalSavings}`);
+    doc.fontSize(12).text(`Total Expenses: $${totalExpenses}`);
+    doc.fontSize(12).text(`Total Investment: $${totalInvestment}`);
+    doc.fontSize(12).text(`Total Business Savings: $${totalBusinessSavings}`);
+    doc.fontSize(12).text(`Balance: $${balance}`);
     // Finalize the PDF
     doc.end();
   } catch (error) {

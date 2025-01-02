@@ -18,11 +18,6 @@ const SendReportButton = () => {
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState('');
     const { loading, success, error } = useSelector((state) => state.report);
-
-    console.log('loading', loading)
-    console.log('success', success)
-    console.log('error', error)
-    console.log("state",useSelector((state) => state))
   
     useEffect(() => {
       if (success) {
