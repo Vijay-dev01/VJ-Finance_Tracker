@@ -1,226 +1,192 @@
-const PDFDocument = require("pdfkit");
-const nodemailer = require("nodemailer");
+const puppeteer = require('puppeteer');
+const handlebars = require('handlebars');
+const nodemailer = require('nodemailer');
+const fs = require('fs').promises;
+const path = require('path');
 const IncomeSchema = require("../models/incomeModel");
 const ExpenseSchema = require("../models/expenseModel");
 
-// Constants for styling
-const STYLES = {
-  colors: {
-    primary: '#4A90E2',
-    white: '#FFFFFF',
-    black: '#000000',
-    background: '#F5F5F5',
-    summaryBox: '#F8F9FA'
-  },
-  table: {
-    cellPadding: 10,
-    cellHeight: 30
-  },
-  fonts: {
-    header: 24,
-    subheader: 16,
-    body: 12
-  },
-  spacing: {
-    margin: 50
-  }
-};
+handlebars.registerHelper('includes', function(str, search) {
+  if (!str || typeof str !== 'string') return false;
+  return str.includes(search);
+});
 
-function createTable(doc, headers, rows, startX, startY) {
-  const { cellPadding, cellHeight } = STYLES.table;
-  const columnWidth = (doc.page.width - startX * 2) / headers.length;
-  let currentY = startY;
+handlebars.registerHelper('replace', function(str, search, replace) {
+  if (!str || typeof str !== 'string') return '';
+  return str.replace(search, replace);
+});
 
-  // Header row
-  doc.fillColor(STYLES.colors.primary)
-     .rect(startX, currentY, doc.page.width - startX * 2, cellHeight)
-     .fill();
-
-  // Header text
-  doc.fillColor(STYLES.colors.white);
-  headers.forEach((header, i) => {
-    doc.text(
-      header,
-      startX + i * columnWidth + cellPadding,
-      currentY + cellPadding,
-      { width: columnWidth - cellPadding * 2 }
-    );
-  });
-
-  // Data rows
-  currentY += cellHeight;
-  doc.fillColor(STYLES.colors.black);
-
-  rows.forEach((row, rowIndex) => {
-    // Zebra striping
-    if (rowIndex % 2 === 0) {
-      doc.fillColor(STYLES.colors.background)
-         .rect(startX, currentY, doc.page.width - startX * 2, cellHeight)
-         .fill();
-    }
-
-    doc.fillColor(STYLES.colors.black);
-    row.forEach((cell, i) => {
-      doc.text(
-        String(cell),
-        startX + i * columnWidth + cellPadding,
-        currentY + cellPadding,
-        { width: columnWidth - cellPadding * 2 }
-      );
-    });
-    currentY += cellHeight;
-  });
-
-  return currentY;
-}
+handlebars.registerHelper('formatDate', function() {
+  return new Date().toLocaleDateString();
+});
 
 async function generateFinancialSummary(userId) {
-  const [incomeSummary, expenseSummary] = await Promise.all([
-    IncomeSchema.aggregate([
-      { $match: { user: userId } },
-      { $group: { _id: "$category", totalAmount: { $sum: "$amount" } } }
-    ]),
-    ExpenseSchema.aggregate([
-      { $match: { user: userId } },
-      { $group: { _id: "$category", totalAmount: { $sum: "$amount" } } }
-    ])
-  ]);
+  try {
+    if (!userId) throw new Error('User ID is required');
 
-  const incomeTotals = incomeSummary.reduce((acc, item) => {
-    acc[item._id] = item.totalAmount;
-    return acc;
-  }, {});
+    const [incomeSummary, expenseSummary] = await Promise.all([
+      IncomeSchema.aggregate([
+        { $match: { user: userId } },
+        { $group: { _id: "$category", totalAmount: { $sum: "$amount" } } }
+      ]),
+      ExpenseSchema.aggregate([
+        { $match: { user: userId } },
+        { $group: { _id: "$category", totalAmount: { $sum: "$amount" } } }
+      ])
+    ]);
 
-  const expenseTotals = expenseSummary.reduce((acc, item) => {
-    acc[item._id] = item.totalAmount;
-    return acc;
-  }, {});
+    if (!Array.isArray(incomeSummary) || !Array.isArray(expenseSummary)) {
+      throw new Error('Invalid data format from database');
+    }
 
-  const totalSavings =
-    (incomeTotals["General"] || 0) +
-    (incomeTotals["Investment"] || 0) +
-    (incomeTotals["SIP"] || 0) +
-    (incomeTotals["Gold"] || 0) +
-    (incomeTotals["Sheet"] || 0) +
-    (incomeTotals["Bussiness"] || 0);
+    const incomeTotals = incomeSummary.reduce((acc, item) => {
+      acc[item._id] = item.totalAmount;
+      return acc;
+    }, {});
 
-  const totalExpenses =
-    (expenseTotals["General"] || 0) +
-    (expenseTotals["Food"] || 0) +
-    (expenseTotals["Fuel"] || 0) +
-    (expenseTotals["Grocery"] || 0) +
-    (expenseTotals["Shopping"] || 0) +
-    (expenseTotals["Travel"] || 0) +
-    (expenseTotals["Fun"] || 0) +
-    (expenseTotals["UnKnown_Expenses"] || 0) +
-    (expenseTotals["Health_Care"] || 0);
+    const expenseTotals = expenseSummary.reduce((acc, item) => {
+      acc[item._id] = item.totalAmount;
+      return acc;
+    }, {});
 
-  const totalInvestment =
-    (incomeTotals["Investment"] || 0) +
-    (incomeTotals["SIP"] || 0) +
-    (incomeTotals["Sheet"] || 0) +
-    (incomeTotals["Gold"] || 0);
+    const totalSavings =
+      (incomeTotals["General"] || 0) +
+      (incomeTotals["Investment"] || 0) +
+      (incomeTotals["SIP"] || 0) +
+      (incomeTotals["Gold"] || 0) +
+      (incomeTotals["Sheet"] || 0) +
+      (incomeTotals["Bussiness"] || 0);
 
-  const totalBusinessSavings = incomeTotals["Bussiness"] || 0;
+    const totalExpenses =
+      (expenseTotals["General"] || 0) +
+      (expenseTotals["Food"] || 0) +
+      (expenseTotals["Fuel"] || 0) +
+      (expenseTotals["Grocery"] || 0) +
+      (expenseTotals["Shopping"] || 0) +
+      (expenseTotals["Travel"] || 0) +
+      (expenseTotals["Fun"] || 0) +
+      (expenseTotals["UnKnown_Expenses"] || 0) +
+      (expenseTotals["Health_Care"] || 0);
 
-  const balance =
-    (incomeTotals["Salary"] || 0) +
-    (incomeTotals["Balance"] || 0) +
-    (incomeTotals["Freelance"] || 0) -
-    totalExpenses -
-    totalInvestment -
-    totalBusinessSavings;
+    const totalInvestment =
+      (incomeTotals["Investment"] || 0) +
+      (incomeTotals["SIP"] || 0) +
+      (incomeTotals["Sheet"] || 0) +
+      (incomeTotals["Gold"] || 0);
 
-  return {
-    incomeTotals,
-    expenseTotals,
-    totalSavings,
-    totalExpenses,
-    totalInvestment,
-    totalBusinessSavings,
-    balance
-  };
+    const totalBusinessSavings = incomeTotals["Bussiness"] || 0;
+
+    const balance =
+      (incomeTotals["Salary"] || 0) +
+      (incomeTotals["Balance"] || 0) +
+      (incomeTotals["Freelance"] || 0) -
+      totalExpenses -
+      totalInvestment -
+      totalBusinessSavings;
+
+    const recordSetData = [
+      {
+        recordSet: incomeSummary.map((item, index) => ({
+          sl_no: index + 1,
+          stationNumbers: item._id || 'Uncategorized',
+          buyType: 'Income',
+          amps: {
+            low: item.totalAmount || 0,
+            avg: item.totalAmount || 0
+          }
+        }))
+      },
+      {
+        recordSet: expenseSummary.map((item, index) => ({
+          sl_no: index + 1,
+          stationNumbers: item._id || 'Uncategorized',
+          buyType: 'Expense',
+          amps: {
+            low: item.totalAmount || 0,
+            avg: item.totalAmount || 0
+          }
+        }))
+      }
+    ];
+
+    return {
+      incomeTotals,
+      expenseTotals,
+      totalSavings,
+      totalExpenses,
+      totalInvestment,
+      totalBusinessSavings,
+      balance,
+      recordSetData
+    };
+  } catch (error) {
+    console.error('Error in generateFinancialSummary:', error);
+    throw error;
+  }
 }
 
-async function createPDFReport(summary) {
-  const doc = new PDFDocument({ margin: STYLES.spacing.margin, size: 'A4' });
-  const buffers = [];
 
-  doc.on("data", chunk => buffers.push(chunk));
+async function createPDFReport(data) {
+  let browser;
+  try {
+    browser = await puppeteer.launch({
+      headless: 'new',
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+    const page = await browser.newPage();
+    
+    const templatePath = path.join(__dirname, 'templates', 'report.hbs');
+    const template = await fs.readFile(templatePath, 'utf8');
+    
+    if (!template) {
+      throw new Error('Template file not found');
+    }
 
-  // Header
-  doc.fontSize(STYLES.fonts.header)
-     .text('Financial Report', { align: 'center' })
-     .moveDown(2);
-
-  // Income Summary
-  doc.fontSize(STYLES.fonts.subheader)
-     .text('Income Summary')
-     .moveDown();
-
-  createTable(
-    doc,
-    ['Category', 'Total Amount'],
-    Object.entries(summary.incomeTotals).map(([category, amount]) => [
-      category,
-      `$${amount.toFixed(2)}`
-    ]),
-    STYLES.spacing.margin,
-    doc.y
-  );
-  doc.moveDown(2);
-
-  // Expense Summary
-  doc.fontSize(STYLES.fonts.subheader)
-     .text('Expense Summary')
-     .moveDown();
-
-  createTable(
-    doc,
-    ['Category', 'Total Amount'],
-    Object.entries(summary.expenseTotals).map(([category, amount]) => [
-      category,
-      `$${amount.toFixed(2)}`
-    ]),
-    STYLES.spacing.margin,
-    doc.y
-  );
-  doc.moveDown(2);
-
-  // Financial Summary Box
-  const summaryItems = [
-    ['Total Savings:', summary.totalSavings],
-    ['Total Expenses:', summary.totalExpenses],
-    ['Total Investment:', summary.totalInvestment],
-    ['Total Business Savings:', summary.totalBusinessSavings],
-    ['Net Balance:', summary.balance]
-  ];
-
-  doc.fontSize(STYLES.fonts.subheader)
-     .text('Financial Summary')
-     .moveDown();
-
-  const summaryStartY = doc.y;
-  doc.fillColor(STYLES.colors.summaryBox)
-     .rect(STYLES.spacing.margin, summaryStartY, doc.page.width - 100, 160)
-     .fill();
-
-  let summaryY = summaryStartY + 20;
-  doc.fillColor(STYLES.colors.black);
-  summaryItems.forEach(([label, value]) => {
-    doc.text(label, 70, summaryY);
-    doc.text(`$${value.toFixed(2)}`, 250, summaryY);
-    summaryY += 25;
-  });
-
-  doc.end();
-  return new Promise(resolve => doc.on("end", () => resolve(Buffer.concat(buffers))));
+    const compiledTemplate = handlebars.compile(template);
+    const html = compiledTemplate({ recordSetData: data });
+    
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+    
+    const pdf = await page.pdf({
+      format: 'A3',
+      margin: { top: '15mm', right: '15mm', bottom: '15mm', left: '15mm' },
+      printBackground: true
+    });
+    
+    return pdf;
+  } catch (error) {
+    console.error('Error in createPDFReport:', error);
+    throw error;
+  } finally {
+    if (browser) {
+      await browser.close().catch(console.error);
+    }
+  }
 }
 
 exports.sendReportByEmail = async (req, res) => {
   try {
+    if (!req.user?._id) {
+      return res.status(401).json({ message: "User not authenticated" });
+    }
+
+    if (!req.body?.email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
     const summary = await generateFinancialSummary(req.user._id);
-    const pdfData = await createPDFReport(summary);
+
+    // Validate `summary` structure
+    if (!summary || !summary.recordSetData || !Array.isArray(summary.recordSetData)) {
+      throw new Error('Invalid summary data');
+    }
+
+    // Pass `recordSetData` to `createPDFReport`
+    const pdfData = await createPDFReport(summary.recordSetData);
+
+    if (!pdfData) {
+      throw new Error('PDF generation failed');
+    }
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -243,24 +209,11 @@ exports.sendReportByEmail = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Report sent via email" });
   } catch (error) {
-    console.error("Server error:", error);
-    res.status(500).json({ message: "Server Error", error });
-  }
-};
-
-exports.getFinancialSummary = async (req, res) => {
-  try {
-    const summary = await generateFinancialSummary(req.user._id);
-
-    res.status(200).json({
-      totalSavings: summary.totalSavings,
-      totalExpenses: summary.totalExpenses,
-      totalInvestment: summary.totalInvestment,
-      totalBusinessSavings: summary.totalBusinessSavings,
-      balance: summary.balance
+    console.error('Error in sendReportByEmail:', error);
+    res.status(500).json({ 
+      message: "Server Error", 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
-  } catch (error) {
-    console.error("Server error:", error);
-    res.status(500).json({ message: "Server Error" });
   }
 };
