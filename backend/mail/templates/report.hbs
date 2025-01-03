@@ -158,7 +158,6 @@
                             <th>Category</th>
                             <th>Type</th>
                             <th>Amount</th>
-                            <th>Average</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -172,13 +171,6 @@
                                 {{replace amps.low "-color" ""}}
                                 {{else}}
                                 {{amps.low}}
-                                {{/if}}
-                            </td>
-                            <td>
-                                ${{#if (includes amps.avg "-color")}}
-                                {{replace amps.avg "-color" ""}}
-                                {{else}}
-                                {{amps.avg}}
                                 {{/if}}
                             </td>
                         </tr>

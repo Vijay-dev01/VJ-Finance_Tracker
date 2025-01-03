@@ -126,7 +126,7 @@ async function generateFinancialSummary(userId) {
 }
 
 
-async function createPDFReport(data) {
+async function createPDFReport(summaryData) {
   let browser;
   try {
     browser = await puppeteer.launch({
@@ -143,7 +143,15 @@ async function createPDFReport(data) {
     }
 
     const compiledTemplate = handlebars.compile(template);
-    const html = compiledTemplate({ recordSetData: data });
+    // Pass the complete summary data to the template
+    const html = compiledTemplate({
+      recordSetData: summaryData.recordSetData,
+      totalSavings: summaryData.totalSavings.toFixed(2),
+      totalExpenses: summaryData.totalExpenses.toFixed(2),
+      totalInvestment: summaryData.totalInvestment.toFixed(2),
+      totalBusinessSavings: summaryData.totalBusinessSavings.toFixed(2),
+      balance: summaryData.balance.toFixed(2)
+    });
     
     await page.setContent(html, { waitUntil: 'networkidle0' });
     
@@ -182,7 +190,7 @@ exports.sendReportByEmail = async (req, res) => {
     }
 
     // Pass `recordSetData` to `createPDFReport`
-    const pdfData = await createPDFReport(summary.recordSetData);
+    const pdfData = await createPDFReport(summary);
 
     if (!pdfData) {
       throw new Error('PDF generation failed');
