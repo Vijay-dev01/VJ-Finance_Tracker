@@ -20,6 +20,7 @@ import IncomeSummary from "./components/Income/IncomeSummary";
 import { useEffect } from "react";
 import store from "./store"
 import { loadUser } from "./actions/UserAction";
+import About from "./components/About";
 
 function App() {
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navbar />}></Route>
             <Route path="/homescreen" element={<HomeScreen />}></Route>
+            <Route path="/about" element={<About />}></Route>
             <Route path="/login" element={<LogIn />}></Route>
             <Route path="/register" element={<Register />}></Route>
             <Route path='/myprofile' element={<ProtectedRoute> <Profile /></ProtectedRoute>}></Route>

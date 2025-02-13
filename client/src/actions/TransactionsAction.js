@@ -53,7 +53,6 @@ export const getIncomes = () => async (dispatch) => {
   try {
     dispatch(incomesRequest());
     const { data } = await axios.get(`/api/v1/get-incomes`);
-    console.log("data", data);
     dispatch(incomesSuccess(data));
   } catch (error) {
     dispatch(incomesFail(error.response.data.message));
