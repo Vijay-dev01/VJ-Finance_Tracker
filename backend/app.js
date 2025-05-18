@@ -14,6 +14,12 @@ app.use('/uploads', express.static(path.join(__dirname,'uploads') ) )
 app.use("/api/v1", auth);
 app.use("/api/v1", transaction);
 
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+});
+
 app.use(errorMiddleware);
 
 module.exports = app;

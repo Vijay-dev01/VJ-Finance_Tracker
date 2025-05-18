@@ -7,7 +7,9 @@
         "start": "nodemon Backend/server.js",
         "dev": "set NODE_ENV=development&&nodemon Backend/server.js",
         "prod": "set NODE_ENV=production&&nodemon Backend/server.js",
-        "seeder": "node Backend/utils/seeder.js "
+        "seeder": "node Backend/utils/seeder.js ",
+        "build": "cd client && npm install && npm run build",
+        "heroku-postbuild": "cd client && npm install && npm run build"
     },
     "author": "Vijay",
     "license": "ISC",
