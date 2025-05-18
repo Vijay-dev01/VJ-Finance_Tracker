@@ -51,11 +51,16 @@ async function generateFinancialSummary(userId) {
 
     const totalSavings =
       (incomeTotals["General"] || 0) +
-      (incomeTotals["Investment"] || 0) +
+      (incomeTotals["Stocks"] || 0) +
       (incomeTotals["SIP"] || 0) +
-      (incomeTotals["Gold"] || 0) +
-      (incomeTotals["Sheet"] || 0) +
-      (incomeTotals["Bussiness"] || 0);
+      (incomeTotals["Gold_etf"] || 0) +
+      (incomeTotals["Sheetu"] || 0) +
+      (incomeTotals["Bussiness"] || 0) -
+      (expenseTotals["Stocks"] || 0) -
+      (expenseTotals["SIP"] || 0) -
+      (expenseTotals["Gold_etf"] || 0) -
+      (expenseTotals["Sheetu"] || 0) -
+      (expenseTotals["Bussiness"] || 0);
 
     const totalExpenses =
       (expenseTotals["General"] || 0) +
@@ -66,15 +71,24 @@ async function generateFinancialSummary(userId) {
       (expenseTotals["Travel"] || 0) +
       (expenseTotals["Fun"] || 0) +
       (expenseTotals["UnKnown_Expenses"] || 0) +
-      (expenseTotals["Health_Care"] || 0);
+      (expenseTotals["Stocks"] || 0) +
+      (expenseTotals["SIP"] || 0) +
+      (expenseTotals["Gold_etf"] || 0) +
+      (expenseTotals["Sheetu"] || 0) +
+      (expenseTotals["Bussiness"] || 0) +
+    (expenseTotals["Health_Care"] || 0);
 
     const totalInvestment =
-      (incomeTotals["Investment"] || 0) +
+      (incomeTotals["Stocks"] || 0) +
       (incomeTotals["SIP"] || 0) +
-      (incomeTotals["Sheet"] || 0) +
-      (incomeTotals["Gold"] || 0);
+      (incomeTotals["Sheetu"] || 0) +
+      (incomeTotals["Gold_etf"] || 0) -
+      (expenseTotals["Stocks"] || 0) -
+      (expenseTotals["SIP"] || 0) -
+      (expenseTotals["Gold_etf"] || 0) -
+      (expenseTotals["Sheetu"] || 0);
 
-    const totalBusinessSavings = incomeTotals["Bussiness"] || 0;
+    const totalBusinessSavings = (incomeTotals["Bussiness"] || 0) - (expenseTotals["Bussiness"] || 0);
 
     const balance =
       (incomeTotals["Salary"] || 0) +

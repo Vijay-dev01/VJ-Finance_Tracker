@@ -181,6 +181,11 @@ export default function AddExpense() {
                   <MenuItem value="Fun">Fun</MenuItem>
                   <MenuItem value="UnKnown_Expenses">UnKnown Expenses</MenuItem>
                   <MenuItem value="Health_Care">Health Care</MenuItem>
+                  <MenuItem value="Stocks">STOCKS</MenuItem>
+                  <MenuItem value="Gold_etf">Gold ETF</MenuItem>
+                  <MenuItem value="SIP">SIP</MenuItem>
+                  <MenuItem value="Sheetu">Sheetu</MenuItem>
+                  <MenuItem value="Bussiness">Bussiness savings</MenuItem>
                 </Select>
               </FormControl>
             </Box>

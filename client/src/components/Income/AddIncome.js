@@ -163,11 +163,11 @@ export default function AddIncome() {
                 >
                   <MenuItem value="General">General</MenuItem>
                   <MenuItem value="Salary">Salary</MenuItem>
-                  <MenuItem value="Investment">Investment</MenuItem>
+                  <MenuItem value="Stocks">Stocks</MenuItem>
                   <MenuItem value="Freelance">Freelance</MenuItem>
                   <MenuItem value="SIP">SIP</MenuItem>
-                  <MenuItem value="Gold">Gold</MenuItem>
-                  <MenuItem value="Sheet">Sheet</MenuItem>
+                  <MenuItem value="Gold_etf">Gold ETF</MenuItem>
+                  <MenuItem value="Sheetu">Sheetu</MenuItem>
                   <MenuItem value="Bussiness">Bussiness savings</MenuItem>
                   <MenuItem value="Balance">Balance</MenuItem>
                 </Select>
