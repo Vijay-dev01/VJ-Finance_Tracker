@@ -23,9 +23,11 @@ import { loadUser } from "./actions/UserAction";
 import About from "./components/About";
 
 function App() {
+
   useEffect(() => {
     store.dispatch(loadUser)
-  })
+  }, [])
+  
   return (
     <>
       <BrowserRouter>

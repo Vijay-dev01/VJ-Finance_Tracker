@@ -94,7 +94,7 @@ function HomeScreen(props) {
 
   const handleSignOut = () => {
     dispatch(logout);
-     navigate("/");
+    navigate("/");
   };
 
   const renderContent = () => {
@@ -122,10 +122,10 @@ function HomeScreen(props) {
   return (
     <AppProvider
       session={{
-        user: {
-          name: user.name,
-          email: user.email,
-          image: user.avatar,
+         user: {
+          name: user?.name || '',
+          email: user?.email || '',
+          image: user?.avatar || '',
         },
       }}
       authentication={{
@@ -152,3 +152,4 @@ HomeScreen.propTypes = {
 };
 
 export default HomeScreen;
+  
