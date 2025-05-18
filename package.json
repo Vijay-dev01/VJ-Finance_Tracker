@@ -4,7 +4,6 @@
     "description": "Vijay website in Mern Stack.",
     "main": "server.js",
     "scripts": {
-        "build": "npm install backend && npm install --prefix client && npm run build --prefix client",
         "start": "nodemon Backend/server.js",
         "dev": "set NODE_ENV=development&&nodemon Backend/server.js",
         "prod": "set NODE_ENV=production&&nodemon Backend/server.js",
@@ -13,10 +12,8 @@
     "author": "Vijay",
     "license": "ISC",
     "dependencies": {
-        "backend": "^0.0.0",
         "bcrypt": "^5.1.1",
         "cookie-parser": "^1.4.6",
-        "cors": "^2.8.5",
         "crypto": "^1.0.1",
         "dotenv": "^16.4.7",
         "express": "^4.19.2",
