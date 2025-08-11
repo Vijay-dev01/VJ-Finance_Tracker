@@ -49,12 +49,12 @@ const Navbar = () => {
         return (
           <Box
             sx={{
-              padding: 2,
+              padding: 1,
               backgroundImage: `url(${expenseImage})`,
               backgroundSize: "cover",
               backgroundAttachment: "fixed",
               backgroundRepeat: "no-repeat",
-              height: "100vh"
+              height: "91vh"
             }}
           >
             <Typography variant="h5">Vijay</Typography>
